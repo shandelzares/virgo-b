@@ -21,7 +21,6 @@ public class AppAutoConfiguration {
     @Value("${spring.jackson.date-format:yyyy-MM-dd HH:mm:ss}")
     private String pattern;
 
-    // 方案三
     @Bean
     @Primary
     public ObjectMapper serializingObjectMapper() {

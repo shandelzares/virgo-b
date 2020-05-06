@@ -1,6 +1,6 @@
 app:
   redis:
-    prefix: demo
+    prefix: virgo-b
   sms:
     type: aliyun
   member:
@@ -16,9 +16,9 @@ spring:
   jpa:
     open-in-view: false
   application:
-    name: demo
+    name: virgo-b
 server:
-  port: 8001
+  port: 8002
 logging:
   file:
     path: ./logs/
