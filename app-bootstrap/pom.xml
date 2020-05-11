@@ -16,12 +16,12 @@
             <artifactId>member</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.virgo</groupId>
+            <artifactId>exam</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.virgo</groupId>
-            <artifactId>company</artifactId>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
         </dependency>
         <dependency>
             <groupId>com.virgo</groupId>

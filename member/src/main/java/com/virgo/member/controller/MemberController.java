@@ -1,5 +1,6 @@
 package com.virgo.member.controller;
 
+import com.virgo.common.page.PageResult;
 import com.virgo.common.response.ResultData;
 import com.virgo.member.dto.MemberQueryParam;
 import com.virgo.member.service.MemberService;
@@ -26,7 +27,7 @@ public class MemberController {
 
     @ApiOperation(value = "会员分页查询", notes = "会员分页查询")
     @GetMapping("v1/member")
-    public ResultData<Page<MemberVO>> findPage(MemberQueryParam memberQueryParam) {
+    public ResultData<PageResult<MemberVO>> findPage(MemberQueryParam memberQueryParam) {
         return ResultData.success(memberService.findPage(memberQueryParam));
     }
 }

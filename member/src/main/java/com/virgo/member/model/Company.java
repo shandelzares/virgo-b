@@ -1,4 +1,4 @@
-package com.virgo.company.model;
+package com.virgo.member.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.CreatedBy;
@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Company {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String shortName;

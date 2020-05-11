@@ -1,5 +1,6 @@
 package com.virgo.member.service;
 
+import com.virgo.common.page.PageResult;
 import com.virgo.member.dto.MemberQueryParam;
 import com.virgo.member.model.Member;
 import com.virgo.member.repository.MemberRepository;
@@ -32,8 +33,8 @@ public class MemberService {
         }).orElse(null);
     }
 
-    public Page<MemberVO> findPage(MemberQueryParam memberQueryParam) {
-        return memberRepository.findAll((Specification<Member>) (root, query, criteriaBuilder) -> {
+    public PageResult<MemberVO> findPage(MemberQueryParam memberQueryParam) {
+        Page<MemberVO> memberVOS = memberRepository.findAll((Specification<Member>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             if (!StringUtils.isEmpty(memberQueryParam.getMemberId())) {
@@ -88,5 +89,6 @@ public class MemberService {
             BeanUtils.copyProperties(article, vo);
             return vo;
         });
+        return PageResult.of(memberVOS);
     }
 }

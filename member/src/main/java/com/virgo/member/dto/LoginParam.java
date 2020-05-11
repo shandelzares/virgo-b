@@ -28,7 +28,7 @@ public class LoginParam {
     private Integer smsCode;
 
     public enum Type {
-        PHONE, SMS, EMAIL, QQ, WE_CHAT
+        PHONE, SMS, PHONE_PASSWORD, EMAIL, QQ, WE_CHAT, ADMIN_LOGIN
     }
 
     public interface SmsGroup extends ValidGroup {

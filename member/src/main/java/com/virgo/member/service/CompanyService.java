@@ -1,4 +1,4 @@
-package com.virgo.company.service;
+package com.virgo.member.service;
 
 import org.springframework.stereotype.Service;
 

@@ -42,30 +42,40 @@ public class LoginService {
     public String login(LoginParam loginParam) {
         log.info("用户登陆 {}", loginParam);
         LocalDateTime now = LocalDateTime.now();
+        Member member;
+        String token;
         switch (loginParam.getType()) {
             case SMS:
                 log.info("短信登陆方式");
                 validateUtils.validate(loginParam, LoginParam.SmsGroup.class);
-                Member member = memberRepository.findByPhoneAndDeletedIsFalse(loginParam.getPhone()).orElseThrow(() -> new BusinessException(ResultEnum.MEMBER_NOT_FOUND));
+                member = memberRepository.findByPhoneAndDeletedIsFalse(loginParam.getPhone()).orElseThrow(() -> new BusinessException(ResultEnum.MEMBER_NOT_FOUND));
                 if (Objects.equals(member.getStatus(), Member.Status.LOCKED))
                     throw new BusinessException(ResultEnum.ACCOUNT_LOCKED);
 
                 smsService.validSmsCode(loginParam.getPhone(), loginParam.getSmsCode(), RequestHolder.getCompanyCode());
-                String token = UUID.randomUUID().toString().replace("-", "");
+                 token = UUID.randomUUID().toString().replace("-", "");
 
-                MemberRedisDTO redisDTO = new MemberRedisDTO();
-                redisDTO.setMemberId(member.getMemberId());
-                redisDTO.setUsername(member.getUsername());
-                redisDTO.setLoginTime(now);
-                redisDTO.setToken(token);
-                redisDTO.setUpdateTime(now);
-                stringRedisTemplate.opsForValue().set(PREFIX + token, JsonUtils.toJson(redisDTO), appConfig.getMember().getTokenExpire(), TimeUnit.SECONDS);
+                storeRedis(now, member, token);
                 return token;
-            case WE_CHAT:
-                log.info("微信登陆");
-
+            case PHONE_PASSWORD:
+                member = memberRepository.findByPhoneAndDeletedIsFalse(loginParam.getPhone()).orElseThrow(() -> new BusinessException(ResultEnum.MEMBER_NOT_FOUND));
+                if (!passwordEncoder.matches(loginParam.getPassword(),member.getPassword()))
+                    throw new BusinessException(ResultEnum.PASSWORD_INCORRECT);
+                 token = UUID.randomUUID().toString().replace("-", "");
+                storeRedis(now, member, token);
+                return token;
             default:
                 throw new BusinessException(ResultEnum.PARAM_ERROR);
         }
+    }
+
+    private void storeRedis(LocalDateTime now, Member member, String token) {
+        MemberRedisDTO redisDTO = new MemberRedisDTO();
+        redisDTO.setMemberId(member.getMemberId());
+        redisDTO.setUsername(member.getUsername());
+        redisDTO.setLoginTime(now);
+        redisDTO.setToken(token);
+        redisDTO.setUpdateTime(now);
+        stringRedisTemplate.opsForValue().set(PREFIX + token, JsonUtils.toJson(redisDTO), appConfig.getMember().getTokenExpire(), TimeUnit.SECONDS);
     }
 }

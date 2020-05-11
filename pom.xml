@@ -6,9 +6,9 @@
     <modules>
         <module>common</module>
         <module>member</module>
-        <module>company</module>
         <module>app-bootstrap</module>
         <module>article</module>
+        <module>exam</module>
         <module>user-behavior</module>
     </modules>
     <parent>
@@ -69,8 +69,8 @@
             </dependency>
             <dependency>
                 <groupId>com.virgo</groupId>
-                <artifactId>company</artifactId>
-                <version>${version}</version>
+                <artifactId>exam</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.virgo</groupId>

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Indexed;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -44,9 +45,23 @@ public class Member {
 
     private String avatarUrl;//头像地址
 
-    private String companyCode;
-
     private Type type;
+    /**
+     * 所属组织，默认享有组织所属的数据权限
+     */
+    @ManyToOne
+    private Organization organization;
+
+    /**
+     * 享有数据权限
+     */
+    @ManyToMany
+    private List<Organization> dataAccess;
+
+    @ManyToMany
+    private List<Role> roles;
+
+    private String companyCode;
 
     public enum Status{
         REGULAR,
