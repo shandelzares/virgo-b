@@ -2,8 +2,8 @@ package com.virgo.exam.controller;
 
 import com.virgo.common.page.PageResult;
 import com.virgo.common.response.ResultData;
-import com.virgo.exam.dot.QuestionQueryParam;
-import com.virgo.exam.dot.QuestionSaveParam;
+import com.virgo.exam.dto.QuestionQueryParam;
+import com.virgo.exam.dto.QuestionSaveParam;
 import com.virgo.exam.service.QuestionService;
 import com.virgo.exam.vo.QuestionVO;
 import io.swagger.annotations.ApiOperation;

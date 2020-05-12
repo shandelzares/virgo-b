@@ -1,4 +1,4 @@
-package com.virgo.exam.dot;
+package com.virgo.exam.dto;
 
 import com.virgo.common.page.AbstractPageRequest;
 import com.virgo.exam.model.Question;

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,28 +32,22 @@ public class ExamPaper {
     private Integer lastTestScore;  //上次考试分数
     private Integer passScore;      //及格线
     private Integer avgDifficult;   //平均难度
+    private Integer examTime;       //考试时间 秒
+    private LocalDateTime examStartTime; //考试开始时间
+    private LocalDateTime examEndTime; //考试结束时间
+    private Integer switchScreen;       //切屏次数
+    private Boolean fullScreen;         //是否全屏作答
+
     private Integer difficult;      //设定难度
     private Integer maxExamCount;   //最多考试次数
-    private String title;
-    private String content;
-    /**
-     * json格式
-     * {
-     * "prefix": "A",
-     * "content": "A选项",
-     * "score": 1
-     * }
-     */
-    private String answer;
-    private String correctAnswer;
+
+    @OneToMany
+    private List<ExamPaperQuestion> questions;
     /**
      *
      */
     private String tags;
-    /**
-     * 解析
-     */
-    private String analysis;
+
     @CreatedBy
     private String creator;//创建人code
     @LastModifiedBy

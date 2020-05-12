@@ -1,14 +1,15 @@
 package com.virgo.exam.vo;
 
+import com.virgo.exam.dto.QuestionSaveParam;
 import com.virgo.exam.model.Question;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
+import javax.persistence.Version;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class QuestionVO {
@@ -35,8 +36,8 @@ public class QuestionVO {
      * "score": 1
      * }
      */
-    private String answer;
-    private String correctAnswer;
+    private List<QuestionSaveParam.Answer> answer;
+    private List<String> correctAnswer;
     /**
      *
      */

@@ -1,7 +1,9 @@
-package com.virgo.exam.dot;
+package com.virgo.exam.dto;
 
 import com.virgo.exam.model.Question;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class QuestionSaveParam {
@@ -28,8 +30,8 @@ public class QuestionSaveParam {
      * "score": 1
      * }
      */
-    private String answer;
-    private String correctAnswer;
+    private List<Answer> answer;
+    private List<String> correctAnswer;
     /**
      *
      */
@@ -40,5 +42,11 @@ public class QuestionSaveParam {
     private String analysis;
     private Long version;
     private String companyCode;
+
+    @Data
+    public static class Answer{
+        private String prefix;
+        private String value;
+    }
 
 }
