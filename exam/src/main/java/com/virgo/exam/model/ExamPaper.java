@@ -16,6 +16,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class ExamPaper {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
     private String name;
@@ -41,11 +42,12 @@ public class ExamPaper {
     private Integer difficult;      //设定难度
     private Integer maxExamCount;   //最多考试次数
 
-    @OneToMany
-    private List<ExamPaperQuestion> questions;
-    /**
-     *
-     */
+    private Integer questionCount;   //最多考试次数
+    private Integer questionScoreTotal;   //最多考试次数
+
+    private Boolean questionDerangement;    //题目乱序
+    private Boolean optionsDerangement;     //选项乱序
+
     private String tags;
 
     @CreatedBy
@@ -61,17 +63,17 @@ public class ExamPaper {
 
     public static enum Type {
         /**
-         * 单选
+         * 随机
          */
-        SINGLE_SELECT,
+        RANDOM,
         /**
-         * 多选
+         * 固定题目
          */
-        MULTI_SELECT,
+        FIXED,
         /**
-         * 判断
+         * 混合
          */
-        TRUE_FALSE,
+        MIXTURE,
         /**
          * 简答
          */

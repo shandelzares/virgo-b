@@ -2,23 +2,21 @@ package com.virgo.exam.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.virgo.common.JsonUtils;
 import com.virgo.common.RequestHolder;
 import com.virgo.common.page.PageResult;
 import com.virgo.exam.dto.ExamPaperQueryParam;
 import com.virgo.exam.dto.ExamPaperSaveParam;
-import com.virgo.exam.dto.QuestionQueryParam;
-import com.virgo.exam.dto.QuestionSaveParam;
 import com.virgo.exam.model.ExamPaper;
-import com.virgo.exam.model.Question;
+import com.virgo.exam.model.ExamPaperQuestion;
+import com.virgo.exam.repository.ExamPaperQuestionRepository;
 import com.virgo.exam.repository.ExamPaperRepository;
 import com.virgo.exam.vo.ExamPaperVO;
-import com.virgo.exam.vo.QuestionVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -28,12 +26,14 @@ import javax.persistence.criteria.Predicate;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ExamPaperService {
     @Resource
     private ExamPaperRepository examPaperRepository;
+    @Resource
+    private ExamPaperQuestionRepository examPaperQuestionRepository;
 
     public PageResult<ExamPaperVO> findPage(@Valid ExamPaperQueryParam questionQueryParam) {
         Page<ExamPaperVO> memberVOS = examPaperRepository.findAll((Specification<ExamPaper>) (root, query, criteriaBuilder) -> {
@@ -59,26 +59,33 @@ public class ExamPaperService {
         }, questionQueryParam.pageable()).map(article -> {
             ExamPaperVO vo = new ExamPaperVO();
             BeanUtils.copyProperties(article, vo);
-//            vo.setAnswer(JsonUtils.parse(article.getAnswer(), new TypeReference<>() {
-//            }));
-//            vo.setCorrectAnswer(JsonUtils.parse(article.getCorrectAnswer(), new TypeReference<>() {
-//            }));
             return vo;
         });
         return PageResult.of(memberVOS);
     }
 
-    public void save(ExamPaperSaveParam questionSaveParam) {
-        ExamPaper menu;
-        if (questionSaveParam.getId() != null) {
-            menu = examPaperRepository.findById(questionSaveParam.getId()).orElse(createMenu());
-        } else menu = createMenu();
-
-        BeanUtil.copyProperties(questionSaveParam, menu, CopyOptions.create().ignoreNullValue().setIgnoreProperties("answer", "correctAnswer"));
-
-//        menu.setAnswer(JsonUtils.toJson(questionSaveParam.getAnswer()));
-//        menu.setCorrectAnswer(JsonUtils.toJson(questionSaveParam.getCorrectAnswer()));
-        examPaperRepository.save(menu);
+    @Transactional
+    public void save(ExamPaperSaveParam examPaperSaveParam) {
+        ExamPaper examPaper;
+        if (examPaperSaveParam.getId() != null) {
+            examPaper = examPaperRepository.findById(examPaperSaveParam.getId()).map(ep -> {
+                examPaperQuestionRepository.deleteAllByExamPaper(ep); //删除历史题目
+                return ep;
+            }).orElse(createMenu());
+        } else examPaper = createMenu();
+        BeanUtil.copyProperties(examPaperSaveParam, examPaper, CopyOptions.create().ignoreNullValue());
+        examPaperRepository.save(examPaper);
+        List<ExamPaperQuestion> examPaperQuestions = examPaperSaveParam.getQuestions().stream().map(question -> {
+            ExamPaperQuestion examPaperQuestion = new ExamPaperQuestion();
+            BeanUtil.copyProperties(question, examPaperQuestion, CopyOptions.create().ignoreNullValue());
+            examPaperQuestion.setExamPaper(examPaper);
+            examPaperQuestion.setQuestionId(question.getId()); //对应题库id
+            examPaperQuestion.setId(null);//设置自增id
+            examPaperQuestion.setAnswer(JsonUtils.toJson(question.getAnswer()));
+            examPaperQuestion.setCorrectAnswer(JsonUtils.toJson(question.getCorrectAnswer()));
+            return examPaperQuestion;
+        }).collect(Collectors.toList());
+        examPaperQuestionRepository.saveAll(examPaperQuestions);
     }
 
     public void remove(Long id) {
