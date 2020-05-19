@@ -49,8 +49,7 @@ public class Member {
     /**
      * 所属组织，默认享有组织所属的数据权限
      */
-    @ManyToOne
-    private Organization organization;
+    private Long organizationId;
 
     /**
      * 享有数据权限
@@ -63,7 +62,7 @@ public class Member {
 
     private String companyCode;
 
-    public enum Status{
+    public enum Status {
         REGULAR,
         LOCKED,
     }

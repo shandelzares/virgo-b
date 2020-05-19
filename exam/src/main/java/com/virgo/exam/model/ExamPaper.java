@@ -12,7 +12,6 @@ import java.util.List;
 
 @Data
 @Entity
-@Table
 @EntityListeners(AuditingEntityListener.class)
 public class ExamPaper {
     @Id
@@ -32,7 +31,7 @@ public class ExamPaper {
     private Integer score;
     private Integer lastTestScore;  //上次考试分数
     private Integer passScore;      //及格线
-    private Integer avgDifficult;   //平均难度
+    private Float avgDifficult;   //平均难度
     private Integer examTime;       //考试时间 秒
     private LocalDateTime examStartTime; //考试开始时间
     private LocalDateTime examEndTime; //考试结束时间
@@ -60,6 +59,22 @@ public class ExamPaper {
     @Version
     private Long version;
     private String companyCode;
+    private Status status;
+
+    public static enum Status {
+        /**
+         * 草稿
+         */
+        DRAFT,
+        /**
+         * 发布
+         */
+        PUBLISHED,
+        /**
+         * 删除
+         */
+        DELETED
+    }
 
     public static enum Type {
         /**

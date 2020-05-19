@@ -17,7 +17,7 @@ public class ExamPaperQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String code;
+    private String value;//选项
 
     private Long questionId;
     @ManyToOne
@@ -37,7 +37,7 @@ public class ExamPaperQuestion {
     private String content;
     /**
      * json格式
-     *{
+     * {
      * "prefix": "A",
      * "content": "A选项",
      * "score": 1

@@ -33,17 +33,15 @@ public class Question {
     private String content;
     /**
      * json格式
-     *{
-     * "prefix": "A",
+     * {
+     *  value:1, //唯一key
      * "content": "A选项",
      * "score": 1
      * }
      */
     private String answer;
     private String correctAnswer;
-    /**
-     *
-     */
+
     private String tags;
     /**
      * 解析

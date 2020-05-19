@@ -1,10 +1,14 @@
 package com.virgo.member.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.virgo.common.page.PageResult;
 import com.virgo.member.dto.MemberQueryParam;
 import com.virgo.member.model.Member;
+import com.virgo.member.model.Organization;
 import com.virgo.member.repository.MemberRepository;
+import com.virgo.member.repository.OrganizationRepository;
 import com.virgo.member.vo.MemberVO;
+import com.virgo.member.vo.OrganizationVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -18,12 +22,16 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class MemberService {
     @Resource
     private MemberRepository memberRepository;
+    @Resource
+    private OrganizationRepository organizationRepository;
 
     public MemberVO findByMemberId(String memberId) {
         return memberRepository.findByMemberId(memberId).map(member -> {
@@ -34,7 +42,7 @@ public class MemberService {
     }
 
     public PageResult<MemberVO> findPage(MemberQueryParam memberQueryParam) {
-        Page<MemberVO> memberVOS = memberRepository.findAll((Specification<Member>) (root, query, criteriaBuilder) -> {
+        Page<Member> memberVOS = memberRepository.findAll((Specification<Member>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             if (!StringUtils.isEmpty(memberQueryParam.getMemberId())) {
@@ -84,11 +92,22 @@ public class MemberService {
 
             query.where(predicates.toArray(new Predicate[0])).orderBy();
             return query.getRestriction();
-        }, memberQueryParam.pageable()).map(article -> {
-            MemberVO vo = new MemberVO();
-            BeanUtils.copyProperties(article, vo);
-            return vo;
-        });
-        return PageResult.of(memberVOS);
+        }, memberQueryParam.pageable());
+
+        List<Organization> organizations = organizationRepository.findByIdIn(memberVOS.getContent().stream().filter(member -> member.getOrganizationId() != null).map(Member::getOrganizationId).collect(Collectors.toList()));
+
+
+        //map(article -> {
+        //            MemberVO vo = new MemberVO();
+        //            BeanUtils.copyProperties(article, vo);
+        //            return vo;
+        //        });
+        return new PageResult<>(memberVOS.getTotalElements(), memberVOS.getContent().stream().map(member -> {
+            MemberVO memberVO = BeanUtil.copyProperties(member, MemberVO.class);
+            organizations.stream().filter(organization -> Objects.equals(member.getOrganizationId(), organization.getId())).findFirst().ifPresent(organization -> {
+                memberVO.setOrganization(BeanUtil.copyProperties(organization, OrganizationVO.class));
+            });
+            return memberVO;
+        }).collect(Collectors.toList()));
     }
 }

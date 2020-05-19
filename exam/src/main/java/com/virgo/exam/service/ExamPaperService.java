@@ -4,13 +4,18 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.virgo.common.JsonUtils;
 import com.virgo.common.RequestHolder;
+import com.virgo.common.exception.BusinessException;
+import com.virgo.common.exception.ResultEnum;
 import com.virgo.common.page.PageResult;
 import com.virgo.exam.dto.ExamPaperQueryParam;
 import com.virgo.exam.dto.ExamPaperSaveParam;
+import com.virgo.exam.dto.ExamPaperSendParam;
 import com.virgo.exam.model.ExamPaper;
 import com.virgo.exam.model.ExamPaperQuestion;
+import com.virgo.exam.model.PersonalExamPaper;
 import com.virgo.exam.repository.ExamPaperQuestionRepository;
 import com.virgo.exam.repository.ExamPaperRepository;
+import com.virgo.exam.repository.PersonalExamPaperRecordRepository;
 import com.virgo.exam.vo.ExamPaperVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -34,6 +39,8 @@ public class ExamPaperService {
     private ExamPaperRepository examPaperRepository;
     @Resource
     private ExamPaperQuestionRepository examPaperQuestionRepository;
+    @Resource
+    private PersonalExamPaperRecordRepository personalExamPaperRecordRepository;
 
     public PageResult<ExamPaperVO> findPage(@Valid ExamPaperQueryParam questionQueryParam) {
         Page<ExamPaperVO> memberVOS = examPaperRepository.findAll((Specification<ExamPaper>) (root, query, criteriaBuilder) -> {
@@ -89,13 +96,38 @@ public class ExamPaperService {
     }
 
     public void remove(Long id) {
-        examPaperRepository.deleteById(id);
+        examPaperRepository.findById(id).ifPresentOrElse(examPaper -> {
+            examPaper.setStatus(ExamPaper.Status.DELETED);
+            examPaperRepository.save(examPaper);
+        }, () -> {
+            throw new BusinessException(ResultEnum.PARAM_ERROR);//todo
+        });
     }
 
 
     private ExamPaper createMenu() {
-        ExamPaper question = new ExamPaper();
-        question.setCompanyCode(RequestHolder.getCompanyCode());
-        return question;
+        ExamPaper examPaper = new ExamPaper();
+        examPaper.setStatus(ExamPaper.Status.DRAFT);
+        examPaper.setCompanyCode(RequestHolder.getCompanyCode());
+        return examPaper;
+    }
+
+    @Transactional
+    public void send(ExamPaperSendParam questionSaveParam) {
+        examPaperRepository.findById(questionSaveParam.getExamPaperId()).ifPresentOrElse(examPaper -> {
+            examPaper.setStatus(ExamPaper.Status.PUBLISHED);
+            if (questionSaveParam.getType() == ExamPaperSendParam.Type.ASSIGN) {//发送至指定的人
+                List<PersonalExamPaper> records = questionSaveParam.getUserIds().stream().map(it -> {
+                    PersonalExamPaper record = new PersonalExamPaper();
+                    record.setExamPaperId(examPaper.getId());
+                    record.setMemberId(it);
+                    return record;
+                }).collect(Collectors.toList());
+                personalExamPaperRecordRepository.saveAll(records);
+            }
+            examPaperRepository.save(examPaper);
+        }, () -> {
+            throw new BusinessException(ResultEnum.PARAM_ERROR);//todo
+        });
     }
 }

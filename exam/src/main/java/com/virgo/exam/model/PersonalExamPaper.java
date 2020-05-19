@@ -15,9 +15,10 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class PersonalExamPaper {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String examPaperCode;
-    private String memberId;
+    private Long examPaperId;
+    private Long memberId;
 
     private Integer examCount;      //考试次数
     private Boolean pass;           //是否通过考试

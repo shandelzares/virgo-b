@@ -1,6 +1,7 @@
 package com.virgo.member.vo;
 
 import com.virgo.member.model.Member;
+import com.virgo.member.model.Organization;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -28,4 +29,5 @@ public class MemberVO {
     private String avatarUrl;//头像地址
     private String companyCode;
     private Member.Type type;
+    private OrganizationVO organization;
 }

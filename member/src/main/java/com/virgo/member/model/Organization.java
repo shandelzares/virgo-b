@@ -20,7 +20,7 @@ public class Organization {
     private Long id;
     private String code;
     private String name;
-    private String parentId;
+    private Long parentId;
     private Type type;
 
     @ManyToMany
