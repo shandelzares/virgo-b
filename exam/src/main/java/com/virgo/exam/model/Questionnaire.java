@@ -1,6 +1,8 @@
 package com.virgo.exam.model;
 
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -8,45 +10,28 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
-@Table
 @EntityListeners(AuditingEntityListener.class)
-public class Question {
+public class Questionnaire {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
+    private String name;
     /**
      * 分类
      */
     private String category;
-    private Type type;
-    /**
-     * 级别（等级、年级等）
-     */
-    private String level;
-    private Integer score;
-    private Integer difficult; //难度 1-10
-    private String title;
-    private String content;
-    /**
-     * json格式
-     * {
-     * value:1, //唯一key
-     * "content": "A选项",
-     * "score": 1
-     * }
-     */
-    private String answer;
-    private String correctAnswer;
+    private LocalDateTime startTime; //考试开始时间
+    private LocalDateTime endTime; //考试结束时间
 
-    private String tags;
-    /**
-     * 解析
-     */
-    private String analysis;
+    @OneToMany
+    @Fetch(FetchMode.JOIN)
+    private List<QuestionnaireQuestion> questions;
+
     @CreatedBy
     private String creator;//创建人code
     @LastModifiedBy
@@ -57,36 +42,20 @@ public class Question {
     @Version
     private Long version;
     private String companyCode;
+    private Status status;
 
-    public static enum Type {
+    public static enum Status {
         /**
-         * 单选
+         * 草稿
          */
-        SINGLE_SELECT,
+        DRAFT,
         /**
-         * 多选
+         * 发布
          */
-        MULTI_SELECT,
+        PUBLISHED,
         /**
-         * 判断
+         * 删除
          */
-        TRUE_FALSE,
-        /**
-         * 简答
-         */
-        SHORT_ANSWER,
-        /**
-         * 填空
-         */
-        COMPLETION,
-
-        /**
-         * 选择
-         */
-        SELECT,
-        /**
-         * 分数
-         */
-        SCORE
+        DELETED
     }
 }
