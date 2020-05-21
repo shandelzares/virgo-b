@@ -4,18 +4,23 @@ import com.virgo.member.model.Dict;
 import lombok.Data;
 
 @Data
-public class DictSaveParam{
+public class DictSaveParam {
 
     private String code;
 
+    private Boolean isTop;
+
     private String name;
 
-    private String desc;
+    private String description;
+
 
     private Dict.Type type;
 
     private String value;
 
     private Dict.FormatType formatType;
+
+    private String companyCode;
 
 }

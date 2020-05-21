@@ -1,6 +1,4 @@
 app:
-  redis:
-    prefix: virgo-b
   sms:
     type: aliyun
   member:

@@ -4,7 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.virgo.common.RequestHolder;
 import com.virgo.member.dto.MenuSaveParam;
+import com.virgo.member.model.CompanyMenu;
 import com.virgo.member.model.Menu;
+import com.virgo.member.repository.CompanyMenuRepository;
 import com.virgo.member.repository.MenuRepository;
 import com.virgo.member.vo.MenuVO;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +22,21 @@ import java.util.stream.Collectors;
 public class MenuService {
     @Resource
     private MenuRepository menuRepository;
+    @Resource
+    private CompanyMenuRepository companyMenuRepository;
 
     public List<MenuVO> findAll() {
-        List<Menu> m = menuRepository.findAllByCompanyCode(RequestHolder.getCompanyCode());
+        List<Menu> m;
+        if (Objects.equals(RequestHolder.getCompanyCode(), "1000000")) {
+            m = menuRepository.findAll();
+        } else {
+            List<CompanyMenu> companyMenus = companyMenuRepository.findByCompanyCode(RequestHolder.getCompanyCode());
+            m = companyMenus.stream().map(it -> {
+                Menu menu = it.getMenu();
+                BeanUtil.copyProperties(it, menu,CopyOptions.create().ignoreNullValue().setIgnoreProperties("id"));
+                return menu;
+            }).collect(Collectors.toList());
+        }
         List<MenuVO> treeNodes = m.stream().map(it -> {
             MenuVO vo = new MenuVO();
             BeanUtils.copyProperties(it, vo);
@@ -63,9 +77,8 @@ public class MenuService {
         menuRepository.save(menu);
     }
 
-    private Menu createMenu(){
+    private Menu createMenu() {
         Menu menu = new Menu();
-        menu.setCompanyCode(RequestHolder.getCompanyCode());
         menu.setDeleted(false);
         menu.setIsShow(true);
         menu.setKeepAlive(false);

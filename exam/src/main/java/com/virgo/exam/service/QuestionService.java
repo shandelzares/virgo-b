@@ -62,6 +62,7 @@ public class QuestionService {
                 questionQueryParam.getType().forEach(in::value);
                 predicates.add(criteriaBuilder.and(in));
             }
+            predicates.add(criteriaBuilder.equal(root.get("companyCode"), RequestHolder.getCompanyCode()));
             query.where(predicates.toArray(new Predicate[0])).orderBy();
             return query.getRestriction();
         }, questionQueryParam.pageable()).map(article -> {

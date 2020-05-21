@@ -13,6 +13,7 @@ public class ExamPaperSaveParam {
     private String name;
     private String difficult;
     private String category;
+    private Boolean autoScoring;
     private Integer lastTestScore;  //上次考试分数
     private Integer passScore;      //及格线
     private Float avgDifficult;   //平均难度
@@ -23,7 +24,8 @@ public class ExamPaperSaveParam {
     private Boolean fullScreen;         //是否全屏作答
     private Integer maxExamCount;   //最多考试次数
     private Integer questionCount;   //最多考试次数
-    private Integer questionScoreTotal;
+    private Integer score;
+    private Boolean optionsDerangement;
     private List<ExamPaperQuestionParam> questions;
 
 

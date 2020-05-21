@@ -23,6 +23,14 @@ public class MenuController {
     public ResultData<List<MenuVO>> findAll() {
         return ResultData.success(menuService.findAll());
     }
+
+
+//    @ApiOperation(value = "菜单全量查询", notes = "菜单全量查询")
+//    @GetMapping("v1/menu")
+//    public ResultData<List<MenuVO>> findAllByCompany() {
+//        return ResultData.success(menuService.findAll());
+//    }
+
     @ApiOperation(value = "菜单新增修改", notes = "菜单新增修改")
     @PostMapping("v1/menu")
     public ResultData<?> save(@Valid @RequestBody MenuSaveParam menuSaveParam) {

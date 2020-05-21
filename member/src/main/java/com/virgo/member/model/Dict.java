@@ -20,6 +20,8 @@ public class Dict {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
+    private String dictGroup;
+    private Boolean isTop;
     private String name;
     private String description;
 
@@ -35,6 +37,8 @@ public class Dict {
     private LocalDateTime updateTime;
     @CreatedDate
     private LocalDateTime createTime;
+
+    private String companyCode;
 
 //    @OneToMany
 //    private List<DictItem> dictItems;

@@ -34,7 +34,6 @@ public class ExamPaperVO {
     private Integer maxExamCount;   //最多考试次数
 
     private Integer questionCount;   //最多考试次数
-    private Integer questionScoreTotal;   //最多考试次数
 
     private Boolean questionDerangement;    //题目乱序
     private Boolean optionsDerangement;     //选项乱序

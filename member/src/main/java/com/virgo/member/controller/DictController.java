@@ -8,10 +8,7 @@ import com.virgo.member.dto.MenuSaveParam;
 import com.virgo.member.service.DictService;
 import com.virgo.member.vo.DictVO;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -20,6 +17,12 @@ import javax.validation.Valid;
 public class DictController {
     @Resource
     private DictService dictService;
+
+    @ApiOperation(value = "字典查询", notes = "字典查询")
+    @GetMapping("v1/dict/{code}")
+    public ResultData<DictVO> findDictByCode(@PathVariable String code) {
+        return ResultData.success(dictService.findByCode(code));
+    }
 
     @ApiOperation(value = "字典查询", notes = "字典查询")
     @GetMapping("v1/dict")

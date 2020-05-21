@@ -37,12 +37,12 @@ public class ExamPaper {
     private LocalDateTime examEndTime; //考试结束时间
     private Integer switchScreen;       //切屏次数
     private Boolean fullScreen;         //是否全屏作答
+    private Boolean autoScoring;
 
     private Integer difficult;      //设定难度
     private Integer maxExamCount;   //最多考试次数
 
     private Integer questionCount;   //最多考试次数
-    private Integer questionScoreTotal;   //最多考试次数
 
     private Boolean questionDerangement;    //题目乱序
     private Boolean optionsDerangement;     //选项乱序

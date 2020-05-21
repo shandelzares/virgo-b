@@ -1,6 +1,8 @@
 package com.virgo.member.model;
 
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -13,31 +15,21 @@ import java.time.LocalDateTime;
 @Entity
 @Table
 @EntityListeners(AuditingEntityListener.class)
-public class Menu {
+public class CompanyMenu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.JOIN)
+    private Menu menu;
     private String name;
-    private Long parentId;
-    private Type type;
-    private String tag;
-    private String component;
-    /**
-     * 前端路由
-     */
-    private String path;
     private Integer sort;
     private String icon;
-    /**
-     * 路由缓存
-     */
     private Boolean keepAlive;
 
     private Boolean deleted;
 
-    /**
-     * 是否显示
-     */
     private Boolean isShow;
 
     @CreatedBy
@@ -50,14 +42,5 @@ public class Menu {
     @Version
     private Long version;
 
-    public static enum Type {
-        /**
-         * 菜单
-         */
-        MENU,
-        /**
-         * 按钮
-         */
-        BUTTON,
-    }
+    private String companyCode;
 }

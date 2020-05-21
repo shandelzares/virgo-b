@@ -48,20 +48,20 @@ public class LoginService {
             case SMS:
                 log.info("短信登陆方式");
                 validateUtils.validate(loginParam, LoginParam.SmsGroup.class);
-                member = memberRepository.findByPhoneAndDeletedIsFalse(loginParam.getPhone()).orElseThrow(() -> new BusinessException(ResultEnum.MEMBER_NOT_FOUND));
+                member = memberRepository.findByPhoneAndCompanyCodeAndDeletedIsFalse(loginParam.getPhone(), RequestHolder.getCompanyCode()).orElseThrow(() -> new BusinessException(ResultEnum.MEMBER_NOT_FOUND));
                 if (Objects.equals(member.getStatus(), Member.Status.LOCKED))
                     throw new BusinessException(ResultEnum.ACCOUNT_LOCKED);
 
                 smsService.validSmsCode(loginParam.getPhone(), loginParam.getSmsCode(), RequestHolder.getCompanyCode());
-                 token = UUID.randomUUID().toString().replace("-", "");
+                token = UUID.randomUUID().toString().replace("-", "");
 
                 storeRedis(now, member, token);
                 return token;
             case PHONE_PASSWORD:
-                member = memberRepository.findByPhoneAndDeletedIsFalse(loginParam.getPhone()).orElseThrow(() -> new BusinessException(ResultEnum.MEMBER_NOT_FOUND));
-                if (!passwordEncoder.matches(loginParam.getPassword(),member.getPassword()))
+                member = memberRepository.findByPhoneAndCompanyCodeAndDeletedIsFalse(loginParam.getPhone(), RequestHolder.getCompanyCode()).orElseThrow(() -> new BusinessException(ResultEnum.MEMBER_NOT_FOUND));
+                if (!passwordEncoder.matches(loginParam.getPassword(), member.getPassword()))
                     throw new BusinessException(ResultEnum.PASSWORD_INCORRECT);
-                 token = UUID.randomUUID().toString().replace("-", "");
+                token = UUID.randomUUID().toString().replace("-", "");
                 storeRedis(now, member, token);
                 return token;
             default:
