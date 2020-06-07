@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Document("exam-publish")
@@ -14,9 +15,10 @@ public class PublishExamPaper {
     @Id
     private String id;
     private String examPaperId;
-    private Long userId;
+    private String memberId;
 
     private Integer examCount;      //考试次数
+    private Integer lastScore;      //最后一次考试分数
     private Boolean pass;           //是否通过考试
     private Integer highestScore;   //考试获得最高分数
     private Integer lowestScore;    //考试获得最高分数
