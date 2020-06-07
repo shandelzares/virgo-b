@@ -5,8 +5,6 @@ import com.virgo.common.response.ResultData;
 import com.virgo.exam.dto.ExamPaperQueryParam;
 import com.virgo.exam.dto.ExamPaperSaveParam;
 import com.virgo.exam.dto.ExamPaperSendParam;
-import com.virgo.exam.dto.QuestionQueryParam;
-import com.virgo.exam.model.ExamPaper;
 import com.virgo.exam.service.ExamPaperService;
 import com.virgo.exam.vo.ExamPaperVO;
 import io.swagger.annotations.ApiOperation;
@@ -36,7 +34,7 @@ public class ExamPaperController {
 
     @ApiOperation(value = "试卷删除", notes = "试卷删除")
     @DeleteMapping("v1/exam/paper/{id}")
-    public ResultData<?> remove(@PathVariable Long id) {
+    public ResultData<?> remove(@PathVariable String id) {
         examPaperService.remove(id);
         return ResultData.success();
     }

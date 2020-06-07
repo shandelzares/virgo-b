@@ -1,48 +1,52 @@
 package com.virgo.exam.model;
 
 import lombok.Data;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.annotation.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-@Entity
-@Table
-@EntityListeners(AuditingEntityListener.class)
+@Document("exam-question")
 public class Question {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
+
     private String code;
     /**
      * 分类
      */
     private String category;
+    /**
+     * 题目类型
+     */
     private Type type;
     /**
-     * 级别（等级、年级等）
+     * 分数
      */
-    private String level;
     private Integer score;
-    private Integer difficult; //难度 1-10
-    private String title;
-    private String content;
     /**
-     * json格式
-     * {
-     * value:1, //唯一key
-     * "content": "A选项",
-     * "score": 1
-     * }
+     * 难度
      */
-    private String answer;
-    private String correctAnswer;
+    private Integer difficult; //难度 1-5
+    /**
+     * 标题
+     */
+    private String title;
+    /**
+     * 题干
+     */
+    private String stem;
+    /**
+     * 答案
+     */
+    private List<Answer> answer;
+    /**
+     * 简答题打分标准
+     */
+    private List<ShortAnswerAnalysis> shortAnswerAnalysis;
 
-    private String tags;
     /**
      * 解析
      */
@@ -57,6 +61,40 @@ public class Question {
     @Version
     private Long version;
     private String companyCode;
+
+
+    @Data
+    public static class Answer {
+        /**
+         * id
+         */
+        private Integer id;
+        /**
+         * 答案内容
+         */
+        private String content;
+        /**
+         * 分数
+         */
+        private Integer score;
+        /**
+         * 是否是正确答案
+         */
+        private Boolean isCorrect;
+    }
+
+
+    @Data
+    public static class ShortAnswerAnalysis {
+        /**
+         * 关键字
+         */
+        private String keyWords;
+        /**
+         * 分数
+         */
+        private Double score;
+    }
 
     public static enum Type {
         /**
@@ -79,9 +117,8 @@ public class Question {
          * 填空
          */
         COMPLETION,
-
         /**
-         * 选择
+         * 下拉选框
          */
         SELECT,
         /**

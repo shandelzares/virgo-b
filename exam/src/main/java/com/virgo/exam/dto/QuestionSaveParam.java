@@ -2,51 +2,52 @@ package com.virgo.exam.dto;
 
 import com.virgo.exam.model.Question;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
 @Data
 public class QuestionSaveParam {
-    private Long id;
+    @Id
+    private String id;
+
     private String code;
     /**
      * 分类
      */
     private String category;
+    /**
+     * 题目类型
+     */
     private Question.Type type;
     /**
-     * 级别（等级、年级等）
+     * 分数
      */
-    private String level;
     private Integer score;
-    private Integer difficult; //难度 1-10
+    /**
+     * 难度
+     */
+    private Integer difficult; //难度 1-5
+    /**
+     * 标题
+     */
     private String title;
-    private String content;
     /**
-     * json格式
-     *{
-     * "prefix": "A",
-     * "content": "A选项",
-     * "score": 1
-     * }
+     * 题干
      */
-    private List<Answer> answer;
-    private List<String> correctAnswer;
+    private String stem;
     /**
-     *
+     * 答案
      */
-    private String tags;
+    private List<Question.Answer> answer;
+    /**
+     * 简答题打分标准
+     */
+    private List<Question.ShortAnswerAnalysis> shortAnswerAnalysis;
+
     /**
      * 解析
      */
     private String analysis;
-    private Long version;
-    private String companyCode;
-
-    @Data
-    public static class Answer{
-        private String prefix;
-        private String value;
-    }
 
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class ExamPaperSendParam {
-    private Long examPaperId;
+    private String examPaperId;
     private List<Long> userIds;
     private Type type;
 

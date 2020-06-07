@@ -33,7 +33,7 @@ public class QuestionController {
 
     @ApiOperation(value = "题库删除", notes = "题库删除")
     @DeleteMapping("v1/question/{id}")
-    public ResultData<?> remove(@PathVariable Long id) {
+    public ResultData<?> remove(@PathVariable String id) {
         questionService.remove(id);
         return ResultData.success();
     }
