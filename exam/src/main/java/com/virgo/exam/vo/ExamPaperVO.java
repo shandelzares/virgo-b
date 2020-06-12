@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class ExamPaperVO {
-    private Long id;
+    private String id;
     private String code;
     private String name;
     /**

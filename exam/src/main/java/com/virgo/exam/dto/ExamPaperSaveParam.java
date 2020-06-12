@@ -3,6 +3,7 @@ package com.virgo.exam.dto;
 import com.virgo.exam.model.ExamPaper;
 import com.virgo.exam.model.Question;
 import lombok.Data;
+import org.springframework.data.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,7 +38,7 @@ public class ExamPaperSaveParam {
     /**
      * 平均难度
      */
-    private Integer avgDifficult;   //平均难度
+    private Float avgDifficult;   //平均难度
     /**
      * 考试时长
      */
@@ -83,42 +84,63 @@ public class ExamPaperSaveParam {
      */
     private Boolean optionsDerangement;     //选项乱序
 
+    @Transient
+    private List<ExamPaperQuestionParam> questions;
+
 
     @Data
     public static class ExamPaperQuestionParam {
         private String id;
+        /**
+         * 题目id
+         */
+        private String questionId;
+        /**
+         * 试卷id
+         */
+        private String examPaperId;
+        /**
+         * 编码
+         */
         private String code;
         /**
          * 分类
          */
         private String category;
+        /**
+         * 题目类型
+         */
         private Question.Type type;
         /**
-         * 级别（等级、年级等）
+         * 分数
          */
-        private String level;
         private Integer score;
-        private Integer difficult; //难度 1-10
+        /**
+         * 难度
+         */
+        private Integer difficult; //难度 1-5
+        /**
+         * 标题
+         */
         private String title;
-        private String content;
         /**
-         * json格式
-         * {
-         * "prefix": "A",
-         * "content": "A选项",
-         * "score": 1
-         * }
+         * 题干
          */
-//        private List<QuestionSaveParam.Answer> answer;
-        private List<String> correctAnswer;
+        private String stem;
         /**
-         *
+         * 答案
          */
-        private String tags;
+        private List<Question.Answer> answer;
+        /**
+         * 简答题打分标准
+         */
+        private List<Question.ShortAnswerAnalysis> shortAnswerAnalysis;
+
         /**
          * 解析
          */
         private String analysis;
 
+        private Question.RandomConfig randomConfig;
     }
 }

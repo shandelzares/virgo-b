@@ -25,6 +25,10 @@ public class ExamPaperQuestion {
      */
     private String code;
     /**
+     * 分类
+     */
+    private String category;
+    /**
      * 题目类型
      */
     private Question.Type type;
@@ -57,6 +61,9 @@ public class ExamPaperQuestion {
      * 解析
      */
     private String analysis;
+
+    private Question.RandomConfig randomConfig;
+
 
     @Version
     private Long version;
