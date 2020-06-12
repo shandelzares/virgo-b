@@ -1,6 +1,7 @@
 package com.virgo.member.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.virgo.common.RequestHolder;
 import com.virgo.common.page.PageResult;
 import com.virgo.member.dto.MemberQueryParam;
 import com.virgo.member.model.Member;
@@ -54,14 +55,22 @@ public class MemberService {
             if (!StringUtils.isEmpty(memberQueryParam.getNickName())) {
                 predicates.add(criteriaBuilder.like(root.get("nickName"), memberQueryParam.getNickName() + "%"));
             }
+            if (!StringUtils.isEmpty(memberQueryParam.getOrganizationId())) {
+                predicates.add(criteriaBuilder.equal(root.get("organizationId"), memberQueryParam.getOrganizationId()));
+            }
             if (!StringUtils.isEmpty(memberQueryParam.getName())) {
                 predicates.add(criteriaBuilder.like(root.get("name"), memberQueryParam.getName() + "%"));
             }
             if (!StringUtils.isEmpty(memberQueryParam.getSex())) {
                 predicates.add(criteriaBuilder.equal(root.get("sex"), memberQueryParam.getSex()));
             }
-            if (!StringUtils.isEmpty(memberQueryParam.getCompanyCode())) {
-                predicates.add(criteriaBuilder.equal(root.get("companyCode"), memberQueryParam.getCompanyCode()));
+
+            if (Objects.equals(RequestHolder.getCompanyCode(), "1000000")) {
+                if (!StringUtils.isEmpty(memberQueryParam.getCompanyCode())) {
+                    predicates.add(criteriaBuilder.equal(root.get("companyCode"), memberQueryParam.getCompanyCode()));
+                }
+            } else {
+                predicates.add(criteriaBuilder.equal(root.get("companyCode"), RequestHolder.getCompanyCode()));
             }
             if (!StringUtils.isEmpty(memberQueryParam.getDeleted())) {
                 predicates.add(criteriaBuilder.equal(root.get("deleted"), memberQueryParam.getDeleted()));

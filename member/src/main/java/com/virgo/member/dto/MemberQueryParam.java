@@ -22,6 +22,8 @@ public class MemberQueryParam extends AbstractPageRequest {
     private String nickName;
     @ApiModelProperty("姓名")
     private String name;
+    @ApiModelProperty("组织id")
+    private String organizationId;
     @ApiModelProperty("性别")
     private Member.Sex sex;
     @ApiModelProperty("公司code")
