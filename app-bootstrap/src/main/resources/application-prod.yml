@@ -9,6 +9,11 @@ spring:
     username: cdb_outerroot
     password: Vsl88402_uuY6
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 3
+      max-lifetime: 10
+      connection-test-query: SELECT 1
+      maximum-pool-size: 50
   data:
     mongodb:
 #      uri: mongodb://admin:UmVvsINhf03dko42@127.0.0.1:27017/virgo-exam?authSource=admin&maxPoolSize=200

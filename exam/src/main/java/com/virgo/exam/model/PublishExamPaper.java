@@ -16,6 +16,7 @@ public class PublishExamPaper {
     private String id;
     private String examPaperId;
     private String memberId;
+    private String userId;
 
     private Integer examCount;      //考试次数
     private Integer lastScore;      //最后一次考试分数
@@ -35,6 +36,13 @@ public class PublishExamPaper {
 
     public static enum Status {
         START,
+        /**
+         * 阅卷中
+         */
+        SCORING,
+        /**
+         * 考试结束
+         */
         END
     }
 }

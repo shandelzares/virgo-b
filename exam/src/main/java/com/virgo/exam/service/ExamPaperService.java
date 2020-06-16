@@ -10,7 +10,9 @@ import com.virgo.exam.dto.ExamPaperQueryParam;
 import com.virgo.exam.dto.ExamPaperSaveParam;
 import com.virgo.exam.dto.ExamPaperSendParam;
 import com.virgo.exam.model.ExamPaper;
+import com.virgo.exam.model.ExamPaperQuestion;
 import com.virgo.exam.model.PublishExamPaper;
+import com.virgo.exam.repository.ExamPaperQuestionRepository;
 import com.virgo.exam.repository.ExamPaperRepository;
 import com.virgo.exam.repository.PublishExamPaperRepository;
 import com.virgo.exam.vo.ExamPaperVO;
@@ -29,6 +31,8 @@ import java.util.stream.Collectors;
 public class ExamPaperService {
     @Resource
     private ExamPaperRepository examPaperRepository;
+    @Resource
+    private ExamPaperQuestionRepository examPaperQuestionRepository;
 
     @Resource
     private PublishExamPaperRepository publishExamPaperRepository;
@@ -53,6 +57,13 @@ public class ExamPaperService {
         } else examPaper = createMenu();
         BeanUtil.copyProperties(examPaperSaveParam, examPaper, CopyOptions.create().ignoreNullValue());
         examPaperRepository.save(examPaper);
+        List<ExamPaperQuestion> questions = examPaperSaveParam.getQuestions().stream().map(it->{
+            ExamPaperQuestion question = BeanUtil.copyProperties(it,ExamPaperQuestion.class);
+            question.setExamPaperId(examPaper.getId());
+            question.setId(null);
+            return question;
+        }).collect(Collectors.toList());
+        examPaperQuestionRepository.saveAll(questions);
     }
 
     public void remove(String id) {
@@ -80,7 +91,8 @@ public class ExamPaperService {
                 List<PublishExamPaper> records = questionSaveParam.getUserIds().stream().map(it -> {
                     PublishExamPaper record = new PublishExamPaper();
                     record.setExamPaperId(examPaper.getId());
-                    record.setMemberId(it + "");
+                    record.setUserId(it + "");
+                    record.setCompanyCode(RequestHolder.getCompanyCode());
                     record.setExamCount(0);
                     return record;
                 }).collect(Collectors.toList());
