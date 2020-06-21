@@ -5,10 +5,10 @@
     <packaging>pom</packaging>
     <modules>
         <!--        <module>common</module>-->
-        <module>member</module>
-        <module>app-bootstrap</module>
+        <module>member-b</module>
+        <module>admin-virgo</module>
         <module>article</module>
-        <module>exam</module>
+        <module>exam-b</module>
         <module>user-behavior</module>
     </modules>
     <parent>
@@ -75,12 +75,12 @@
             </dependency>
             <dependency>
                 <groupId>com.virgo</groupId>
-                <artifactId>exam</artifactId>
+                <artifactId>exam-b</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.virgo</groupId>
-                <artifactId>member</artifactId>
+                <artifactId>member-b</artifactId>
                 <version>${version}</version>
             </dependency>
             <dependency>

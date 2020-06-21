@@ -9,15 +9,15 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>app-bootstrap</artifactId>
+    <artifactId>admin-virgo</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.virgo</groupId>
-            <artifactId>member</artifactId>
+            <artifactId>member-b</artifactId>
         </dependency>
         <dependency>
             <groupId>com.virgo</groupId>
-            <artifactId>exam</artifactId>
+            <artifactId>exam-b</artifactId>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
