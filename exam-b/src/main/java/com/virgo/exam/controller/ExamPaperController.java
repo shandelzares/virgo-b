@@ -25,6 +25,12 @@ public class ExamPaperController {
         return ResultData.success(examPaperService.findPage(questionQueryParam));
     }
 
+    @ApiOperation(value = "试卷详情", notes = "试卷详情")
+    @GetMapping("v1/exam/paper/{id}")
+    public ResultData<ExamPaperVO> detail( @PathVariable String id) {
+        return ResultData.success(examPaperService.detail(id));
+    }
+
     @ApiOperation(value = "试卷保存", notes = "试卷保存")
     @PostMapping("v1/exam/paper")
     public ResultData<?> save(@Valid @RequestBody ExamPaperSaveParam questionSaveParam) {
@@ -45,4 +51,5 @@ public class ExamPaperController {
         examPaperService.send(questionSaveParam);
         return ResultData.success();
     }
+
 }

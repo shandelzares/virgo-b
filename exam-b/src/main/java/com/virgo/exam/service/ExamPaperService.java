@@ -57,8 +57,8 @@ public class ExamPaperService {
         } else examPaper = createMenu();
         BeanUtil.copyProperties(examPaperSaveParam, examPaper, CopyOptions.create().ignoreNullValue());
         examPaperRepository.save(examPaper);
-        List<ExamPaperQuestion> questions = examPaperSaveParam.getQuestions().stream().map(it->{
-            ExamPaperQuestion question = BeanUtil.copyProperties(it,ExamPaperQuestion.class);
+        List<ExamPaperQuestion> questions = examPaperSaveParam.getQuestions().stream().map(it -> {
+            ExamPaperQuestion question = BeanUtil.copyProperties(it, ExamPaperQuestion.class);
             question.setExamPaperId(examPaper.getId());
             question.setId(null);
             return question;
@@ -68,8 +68,9 @@ public class ExamPaperService {
 
     public void remove(String id) {
         examPaperRepository.findById(id).ifPresentOrElse(examPaper -> {
-            examPaper.setStatus(ExamPaper.Status.DELETED);
-            examPaperRepository.save(examPaper);
+//            examPaper.setStatus(ExamPaper.Status.DELETED);
+//            examPaperRepository.save(examPaper);
+            examPaperRepository.delete(examPaper);
         }, () -> {
             throw new BusinessException(ResultEnum.PARAM_ERROR);//todo
         });
@@ -102,5 +103,11 @@ public class ExamPaperService {
         }, () -> {
             throw new BusinessException(ResultEnum.PARAM_ERROR);//todo
         });
+    }
+
+    public ExamPaperVO detail(String id) {
+        return examPaperRepository.findById(id).map(examPaper -> {
+            return BeanUtil.copyProperties(examPaper, ExamPaperVO.class);
+        }).orElse(null);
     }
 }

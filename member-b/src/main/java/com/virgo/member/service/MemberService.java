@@ -3,6 +3,7 @@ package com.virgo.member.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.virgo.common.RequestHolder;
 import com.virgo.common.page.PageResult;
+import com.virgo.member.dto.MemberQueryByUserIdsParam;
 import com.virgo.member.dto.MemberQueryParam;
 import com.virgo.member.model.Member;
 import com.virgo.member.model.Organization;
@@ -118,5 +119,21 @@ public class MemberService {
             });
             return memberVO;
         }).collect(Collectors.toList()));
+    }
+
+    public List<MemberVO> findByIds(MemberQueryByUserIdsParam param) {
+        List<Member> members = memberRepository.findByIdIn(param.getUserIds());
+        if (CollectionUtils.isEmpty(members))
+            return null;
+
+        List<Organization> organizations = organizationRepository.findByIdIn(members.stream().filter(member -> member.getOrganizationId() != null).map(Member::getOrganizationId).collect(Collectors.toList()));
+
+        return members.stream().map(member -> {
+            MemberVO memberVO = BeanUtil.copyProperties(member, MemberVO.class);
+            organizations.stream().filter(organization -> Objects.equals(member.getOrganizationId(), organization.getId())).findFirst().ifPresent(organization -> {
+                memberVO.setOrganization(BeanUtil.copyProperties(organization, OrganizationVO.class));
+            });
+            return memberVO;
+        }).collect(Collectors.toList());
     }
 }
