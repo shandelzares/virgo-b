@@ -2,9 +2,12 @@ package com.virgo.member.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.virgo.common.RequestHolder;
+import com.virgo.common.exception.BusinessException;
+import com.virgo.common.exception.ResultEnum;
 import com.virgo.common.page.PageResult;
 import com.virgo.member.dto.MemberQueryByUserIdsParam;
 import com.virgo.member.dto.MemberQueryParam;
+import com.virgo.member.dto.MemberResetPasswordParam;
 import com.virgo.member.model.Member;
 import com.virgo.member.model.Organization;
 import com.virgo.member.repository.MemberRepository;
@@ -15,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -34,6 +38,8 @@ public class MemberService {
     private MemberRepository memberRepository;
     @Resource
     private OrganizationRepository organizationRepository;
+    @Resource
+    private PasswordEncoder passwordEncoder;
 
     public MemberVO findByMemberId(String memberId) {
         return memberRepository.findByMemberId(memberId).map(member -> {
@@ -135,5 +141,15 @@ public class MemberService {
             });
             return memberVO;
         }).collect(Collectors.toList());
+    }
+
+    public void resetPassword(MemberResetPasswordParam param) {
+        log.info("修改密码 {} , 操作員{}", param.getUserId(),RequestHolder.getUserId());
+        memberRepository.findById(param.getUserId()).ifPresentOrElse(member -> {
+            member.setPassword(passwordEncoder.encode(param.getPassword()));
+            memberRepository.save(member);
+        },()->{
+            throw new BusinessException(ResultEnum.MEMBER_NOT_FOUND);
+        });
     }
 }
